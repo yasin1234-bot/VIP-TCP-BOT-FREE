@@ -1,1 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#07080d">
+<title>YASIN × BHAI — TCP BOT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
+:root {
+  --bg-dark: #07080d;
+  --bg-card: rgba(20, 23, 34, 0.55);
+  --primary: #6366f1;
+  --primary-glow: rgba(99, 102, 241, 0.45);
+  --secondary: #ec4899;
+  --accent: #06b6d4;
+  --text-light: #f8fafc;
+  --text-soft: #cbd5e1;
+  --text-muted: #7a8599;
+  --border: rgba(255, 255, 255, 0.07);
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-light);
+  background: var(--bg-dark);
+  overflow-x: hidden;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content:''; position: fixed; inset: -20%;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(99,102,241,0.18) 0%, transparent 35%),
+    radial-gradient(circle at 85% 75%, rgba(236,72,153,0.13) 0%, transparent 35%),
+    radial-gradient(circle at 50% 50%, rgba(6,182,212,0.06) 0%, transparent 50%);
+  pointer-events:none; z-index:0; will-change: transform;
+  animation: bgFloat 24s ease-in-out infinite alternate;
+}
+body::after {
+  content:''; position: fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 44px 44px; pointer-events:none; z-index:0;
+  mask-image: radial-gradient(circle at 50% 40%, #000 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 50% 40%, #000 0%, transparent 75%);
+}
+@keyframes bgFloat { 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(2%,-2%) scale(1.06);} }
+
+#app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+.screen { display: flex; min-height: 100vh; padding: 22px 18px calc(20px + var(--safe-bottom)) 18px; flex-direction: column; }
+
+.hero {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; gap: 26px; padding: 10px 0;
+  animation: screenFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes screenFadeUp {
+  from { opacity:0; transform: translateY(24px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+.logo-container {
+  position: relative; display: flex; flex-direction: column;
+  align-items: center; animation: floaty 5s ease-in-out infinite;
+}
+@keyframes floaty { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);} }
+
+.logo-orb {
+  position: absolute; top:50%; left:50%;
+  width:220px; height:220px; margin:-110px 0 0 -110px;
+  border-radius:50%; pointer-events:none;
+  background: conic-gradient(from 0deg, transparent 0%, var(--primary) 25%, transparent 50%, var(--secondary) 75%, transparent 100%);
+  opacity:0.28; filter: blur(1px); animation: spin 8s linear infinite;
+}
+.logo-orb.inner {
+  width:160px; height:160px; margin:-80px 0 0 -80px;
+  background: conic-gradient(from 180deg, transparent 0%, var(--accent) 40%, transparent 80%);
+  opacity:0.22; animation: spinReverse 11s linear infinite;
+}
+.logo-orb::before { content:''; position:absolute; inset:8px; border-radius:50%; background: var(--bg-dark); }
+@keyframes spin { to{transform:rotate(360deg);} }
+@keyframes spinReverse { to{transform:rotate(-360deg);} }
+
+/* ── RGB ANIMATED LOGO BOX ── */
+.logo-badge {
+  position: relative; z-index: 2;
+  width: 96px; height: 96px; border-radius: 26px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 3px; /* RGB বর্ডারের থিকনেস */
+  background: linear-gradient(0deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bfd, #7a00ff, #ff00c8, #ff0000);
+  background-size: 400% 400%;
+  animation: rgbGlow 6s linear infinite;
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+}
+
+.logo-badge::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 28px;
+  background: inherit;
+  background-size: 400% 400%;
+  filter: blur(10px);
+  opacity: 0.75;
+  z-index: -1;
+  animation: rgbGlow 6s linear infinite;
+}
+
+@keyframes rgbGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.logo-img {
+  width: 100%; height: 100%;
+  border-radius: 23px;
+  object-fit: cover;
+  background: var(--bg-dark);
+  display: block;
+}
+
+.logo-text-wrap { margin-top:22px; z-index:2; }
+.logo-title {
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size: clamp(30px, 9vw, 42px); letter-spacing:-1.2px;
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color: transparent; line-height:1.08;
+}
+.logo-highlight {
+  background: linear-gradient(120deg, var(--accent), var(--primary) 50%, var(--secondary));
+  background-size: 200% auto;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientText 5s linear infinite;
+}
+@keyframes gradientText { to{background-position: 200% center;} }
+
+.logo-sub {
+  font-size:11px; letter-spacing:6px; color: var(--text-muted);
+  margin-top:12px; font-weight:600; text-transform:uppercase;
+}
+
+.features-grid {
+  display:grid; grid-template-columns: repeat(4,1fr);
+  gap:9px; width:100%; max-width:400px; margin:4px 0;
+}
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 6px 12px;
+  display:flex; flex-direction:column; align-items:center; gap:7px;
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), border-color 0.25s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.feature-card:active { transform: translateY(-3px) scale(1.02); border-color: var(--primary-glow); }
+.feature-card i {
+  font-style:normal; font-size:20px;
+  filter: drop-shadow(0 0 10px var(--primary-glow)); line-height:1;
+}
+.feature-card span {
+  font-size:9.5px; letter-spacing:0.3px; color: var(--text-soft);
+  text-align:center; font-weight:600; line-height:1.2;
+}
+
+.btn-main {
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:15px; letter-spacing:1.5px;
+  padding:18px 40px; border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.15);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color:#fff; cursor:pointer;
+  transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s;
+  box-shadow: 0 10px 36px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.35);
+  width:100%; max-width:400px; position:relative; overflow:hidden;
+  text-decoration:none; display:inline-block; text-align:center;
+}
+.btn-main::after {
+  content:''; position:absolute; top:0; left:-100%;
+  width:55%; height:100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-22deg); transition: left 0.6s ease;
+}
+.btn-main:active { transform: scale(0.96); }
+.btn-main:active::after { left:150%; }
+
+.home-footer {
+  text-align:center; color: var(--text-muted);
+  font-size:10.5px; padding: 18px 10px 4px;
+  font-weight:500; letter-spacing:0.4px;
+}
+
+@media (min-width: 640px) {
+  .screen { padding: 32px 24px; align-items: center; }
+  .screen > * { width: 100%; max-width: 460px; }
+  .features-grid { gap: 12px; }
+  .feature-card { padding: 18px 8px 15px; }
+  .feature-card i { font-size: 24px; }
+  .feature-card span { font-size: 11px; }
+  .hero { gap: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="screen">
+    <div class="hero">
+      <div class="logo-container">
+        <div class="logo-orb"></div>
+        <div class="logo-orb inner"></div>
+        
+        <!-- RGB লাইট বর্ডার সহ লোগো কন্টেইনার -->
+        <div class="logo-badge">
+          <!-- লোগো ফাইলের পাথ বা URL নিচে src=" " এর মধ্যে বসাবেন -->
+          <img src="/static/logo.png" alt="Yasin Bhai Logo" class="logo-img">
+        </div>
+
+        <div class="logo-text-wrap">
+          <div class="logo-title">YASIN <span class="logo-highlight">×</span> BHAI</div>
+          <div class="logo-sub">TCP BOT SYSTEM</div>
+        </div>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card"><i>⚡</i><span>Premium<br>Bot</span></div>
+        <div class="feature-card"><i>🕒</i><span>24H<br>Free</span></div>
+        <div class="feature-card"><i>💾</i><span>Auto<br>Save</span></div>
+        <div class="feature-card"><i>🎮</i><span>OB55<br>Mode</span></div>
+      </div>
+
+      <a class="btn-main" href="/login">GET STARTED</a>
+    </div>
+    <div class="home-footer">© 2026 YASIN × BHAI — All Rights Reserved</div>
+  </div>
+</div>
+
+<script>
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    ...opts
+  });
+  try { return await res.json(); } catch { return { ok: false, error: 'Network error' }; }
+}
+
+async function checkSession() {
+  const r = await api('/api/me');
+  if (r.logged_in) { window.location.href = '/dashboard'; }
+}
+
+checkSession();
+</script>
+</body>
+</html>

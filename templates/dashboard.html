@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#06060c">
+<title>Dashboard — YASIN × BHAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --bg-dark: #06060c;
+  --bg-card: rgba(22, 24, 38, 0.6);
+  --bg-glass: rgba(14, 16, 26, 0.78);
+  --primary: #7c6cff;
+  --primary-2: #a855f7;
+  --primary-glow: rgba(124, 108, 255, 0.5);
+  --secondary: #f472b6;
+  --accent: #22d3ee;
+  --accent-2: #34d399;
+  --text-light: #f5f6fa;
+  --text-soft: #c8ccda;
+  --text-muted: #7c8399;
+  --border: rgba(255, 255, 255, 0.075);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --border-focus: rgba(124, 108, 255, 0.65);
+  --success: #34d399;
+  --danger: #f87171;
+  --radius-lg: 22px;
+  --radius-md: 15px;
+  --radius-sm: 11px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-light);
+  background: var(--bg-dark);
+  overflow-x: hidden;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content:''; position:fixed; inset:-20%;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(124,108,255,0.28) 0%, transparent 38%),
+    radial-gradient(circle at 88% 18%, rgba(244,114,182,0.18) 0%, transparent 36%),
+    radial-gradient(circle at 80% 88%, rgba(34,211,238,0.16) 0%, transparent 38%),
+    radial-gradient(circle at 20% 92%, rgba(52,211,153,0.12) 0%, transparent 36%),
+    radial-gradient(circle at 50% 50%, rgba(168,85,247,0.1) 0%, transparent 55%);
+  pointer-events:none; z-index:0; will-change: transform;
+  animation: bgFloat 26s ease-in-out infinite alternate;
+}
+body::after {
+  content:''; position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size:46px 46px; pointer-events:none; z-index:0;
+  mask-image: radial-gradient(circle at 50% 35%, #000 0%, transparent 78%);
+  -webkit-mask-image: radial-gradient(circle at 50% 35%, #000 0%, transparent 78%);
+}
+@keyframes bgFloat { 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(2.5%,-2%) scale(1.08);} }
+
+#app { position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; }
+
+.screen {
+  display:flex; min-height:100vh;
+  padding: 22px 18px calc(100px + var(--safe-bottom)) 18px;
+  flex-direction:column;
+  animation: screenFadeUp 0.55s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes screenFadeUp {
+  from { opacity:0; transform: translateY(20px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+/* ═══ DASH HEAD ═══ */
+.dash-head {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:18px; padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(42,40,72,0.75), rgba(22,24,38,0.55));
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+  box-shadow: 0 14px 38px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.1);
+  position:relative; overflow:hidden;
+}
+.dash-head::before {
+  content:''; position:absolute; top:-60%; right:-15%;
+  width:200px; height:200px;
+  background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+  opacity:0.5; pointer-events:none;
+}
+.dash-head::after {
+  content:''; position:absolute; bottom:-70%; left:-10%;
+  width:180px; height:180px;
+  background: radial-gradient(circle, rgba(34,211,238,0.3) 0%, transparent 70%);
+  opacity:0.4; pointer-events:none;
+}
+.dash-user {
+  font-family:'Space Grotesk',sans-serif; position:relative; z-index:1;
+  display:flex; align-items:center; gap:12px;
+}
+.dash-avatar {
+  width:44px; height:44px; border-radius:14px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  display:grid; place-items:center;
+  font-size:17px; font-weight:700; color:#fff;
+  box-shadow: 0 6px 22px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.35);
+  flex-shrink:0;
+}
+.dash-user-info small {
+  color: var(--text-muted); font-size:9px;
+  letter-spacing:2px; display:block;
+  margin-bottom:3px; font-weight:600;
+}
+.dash-user-info span {
+  font-size:15.5px; font-weight:700; color: var(--text-light);
+  display:block; max-width:160px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.btn-logout {
+  padding: 10px 15px;
+  background: linear-gradient(135deg, rgba(248,113,113,0.16), rgba(244,114,182,0.1));
+  border: 1px solid rgba(248,113,113,0.32);
+  border-radius: var(--radius-sm);
+  color:#fca5a5; font-family:'Space Grotesk',sans-serif;
+  font-size:10.5px; font-weight:700; letter-spacing:0.7px;
+  cursor:pointer; transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  flex-shrink:0; position:relative; z-index:1;
+  box-shadow: 0 4px 14px rgba(248,113,113,0.15);
+}
+.btn-logout:active { background: rgba(248,113,113,0.26); transform: scale(0.95); }
+
+/* Tab Content */
+.tab-content { display:none; animation: screenFadeUp 0.35s ease; flex:1; }
+.tab-content.active { display:block; }
+
+/* ═══ REFINED SLΕΕΚ BOTTOM NAV ═══ */
+.bottom-nav {
+  position: fixed;
+  bottom: calc(14px + var(--safe-bottom));
+  left: 50%; transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 320px;
+  background: rgba(14, 16, 26, 0.88);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  display: flex; justify-content: space-between;
+  padding: 4px; gap: 4px;
+  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+.main-tab {
+  flex: 1; display: flex; flex-direction: row;
+  align-items: center; justify-content: center;
+  gap: 7px;
+  background: transparent; border: none;
+  color: var(--text-muted);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+.main-tab svg {
+  width: 15px; height: 15px; fill: currentColor;
+  transition: transform 0.25s;
+}
+.main-tab.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  box-shadow: 0 4px 16px var(--primary-glow);
+}
+.main-tab.active svg {
+  transform: scale(1.1);
+}
+.main-tab:active { transform: scale(0.96); }
+
+/* ═══ Dashboard Cards ═══ */
+.config-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 10px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+  position:relative;
+}
+.card-title {
+  font-family:'Space Grotesk',sans-serif;
+  font-size:11.5px; font-weight:700; letter-spacing:1.4px;
+  color: var(--text-soft);
+  margin-bottom:16px; padding-bottom:13px;
+  border-bottom: 1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+  text-transform:uppercase;
+}
+.card-title::before {
+  content:''; width:3px; height:14px; border-radius:3px;
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+  margin-right:10px;
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+.card-title {
+  justify-content:flex-start;
+}
+.card-title > *:last-child:not(:first-child) {
+  margin-left:auto;
+}
+
+/* Bot Controls */
+.bot-controls { display:flex; gap:10px; }
+.btn-start, .btn-stop {
+  flex:1; padding:15px;
+  border-radius: var(--radius-md);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12.5px; font-weight:700; letter-spacing:1.2px;
+  cursor:pointer; border:1px solid;
+  transition: transform 0.15s, background 0.25s, box-shadow 0.25s, filter 0.2s;
+}
+.btn-start {
+  border-color: rgba(52,211,153,0.5);
+  color:#6ee7b7; background: linear-gradient(135deg, rgba(52,211,153,0.16), rgba(16,185,129,0.08));
+  box-shadow: 0 6px 20px rgba(52,211,153,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.btn-start:not(:disabled):active { transform: scale(0.96); background: rgba(52,211,153,0.28); }
+.btn-start:disabled { opacity:0.28; filter: grayscale(1); box-shadow:none; }
+.btn-stop {
+  border-color: rgba(248,113,113,0.5);
+  color:#fca5a5; background: linear-gradient(135deg, rgba(248,113,113,0.16), rgba(239,68,68,0.08));
+  box-shadow: 0 6px 20px rgba(248,113,113,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.btn-stop:not(:disabled):active { transform: scale(0.96); background: rgba(248,113,113,0.28); }
+.btn-stop:disabled { opacity:0.28; filter: grayscale(1); box-shadow:none; }
+
+/* Status Pill */
+.status-pill {
+  display:inline-flex; align-items:center; gap:8px;
+  padding: 5px 12px; border-radius: 14px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:10px; font-weight:700;
+  margin-bottom:0; margin-right:-4px; letter-spacing:0.9px;
+  transition: all 0.3s;
+}
+.status-pill.online {
+  color:#6ee7b7; background: linear-gradient(135deg, rgba(52,211,153,0.16), rgba(16,185,129,0.1));
+  border: 1px solid rgba(52,211,153,0.4);
+  box-shadow: 0 0 28px rgba(52,211,153,0.22), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.status-pill.offline {
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.045);
+  border: 1px solid var(--border);
+}
+.dot {
+  width:7px; height:7px; border-radius:50%;
+  background: currentColor; box-shadow: 0 0 12px currentColor;
+  animation: pulseDot 1.8s ease-in-out infinite;
+}
+@keyframes pulseDot { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+/* Log Console */
+.log-console {
+  background: linear-gradient(180deg, #05060c, #030408);
+  border: 1px solid rgba(124,108,255,0.12);
+  border-radius: var(--radius-md);
+  padding:14px;
+  height: 300px; overflow-y:auto;
+  font-family:'Courier New', Consolas, monospace;
+  font-size:11.5px; line-height:1.7;
+  color:#b3c0d8;
+  box-shadow: inset 0 3px 26px rgba(0,0,0,0.9), 0 0 0 1px rgba(124,108,255,0.06);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124,108,255,0.35) transparent;
+}
+.log-console::-webkit-scrollbar { width:4px; }
+.log-console::-webkit-scrollbar-thumb { background: rgba(124,108,255,0.35); border-radius:4px; }
+.log-line { word-break: break-all; padding: 2px 0; }
+.log-line.err { color:#f87171 !important; text-shadow: 0 0 8px rgba(248,113,113,0.4); font-weight: bold; }
+.log-line.success { color:#34d399 !important; }
+
+.btn-clear-log {
+  background: linear-gradient(135deg, rgba(124,108,255,0.14), rgba(168,85,247,0.08));
+  border: 1px solid rgba(124,108,255,0.32);
+  color: #c4b5fd;
+  padding: 7px 13px; border-radius: 8px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:9.5px; font-weight:700; letter-spacing:0.7px;
+  cursor:pointer; transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+.btn-clear-log:active { background: rgba(124,108,255,0.3); color:#fff; transform: scale(0.95); }
+
+/* Form Fields */
+.field { margin-bottom:15px; position:relative; z-index:2; }
+.field label {
+  display:block; font-size:10.5px; letter-spacing:1.3px;
+  color: var(--text-muted); font-weight:600;
+  margin-bottom:7px; text-transform:uppercase;
+}
+.field input, .region-select {
+  width:100%; padding:14px 16px;
+  background: rgba(0,0,0,0.38);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-light); font-family:'Outfit',sans-serif;
+  font-size:15px; font-weight:500; outline:none;
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+  -webkit-appearance:none; appearance:none;
+}
+.field input:focus, .region-select:focus {
+  border-color: var(--border-focus);
+  background: rgba(0,0,0,0.55);
+  box-shadow: 0 0 0 3px rgba(124,108,255,0.16), 0 0 20px rgba(124,108,255,0.12);
+}
+.field input::placeholder { color:#5b6577; }
+
+.region-select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a99bff' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 42px;
+}
+
+.btn-submit {
+  width:100%; padding:16px; margin-top:8px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2) 55%, var(--secondary));
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: var(--radius-sm);
+  color:#fff; font-family:'Space Grotesk',sans-serif;
+  font-size:13.5px; font-weight:700; letter-spacing:1.3px;
+  cursor:pointer;
+  transition: transform 0.2s, filter 0.2s, box-shadow 0.25s;
+  box-shadow: 0 10px 30px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,0.32);
+  position:relative; z-index:2;
+}
+.btn-submit:active { transform: scale(0.97); filter: brightness(0.92); }
+
+/* Toast */
+.toast {
+  position:fixed; top:22px; left:50%;
+  transform: translateX(-50%) translateY(-160%);
+  padding:13px 22px; border-radius: var(--radius-md);
+  background: rgba(20,22,36,0.97);
+  border: 1px solid var(--border-strong);
+  color: var(--text-light);
+  font-family:'Space Grotesk',sans-serif;
+  font-size:12.5px; font-weight:600;
+  box-shadow: 0 14px 44px rgba(0,0,0,0.7);
+  transition: transform 0.42s cubic-bezier(0.175,0.885,0.32,1.275);
+  z-index:999; max-width:88vw; text-align:center;
+  display:flex; align-items:center; gap:9px;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+.toast::before { content:'ℹ'; font-size:15px; color: var(--primary); flex-shrink:0; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.err { border-color: rgba(248,113,113,0.4); }
+.toast.err::before { content:'✕'; color: var(--danger); }
+.toast.ok { border-color: rgba(52,211,153,0.4); }
+.toast.ok::before { content:'✓'; color: var(--success); }
+
+@media (min-width: 640px) {
+  .screen { padding: 32px 24px 130px; align-items: center; }
+  .screen > * { width:100%; max-width:460px; }
+  .bottom-nav { bottom: 24px; }
+}
+@media (min-width: 900px) {
+  .screen > * { max-width:480px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="screen">
+
+    <div class="dash-head">
+      <div class="dash-user">
+        <div class="dash-avatar">Y</div>
+        <div class="dash-user-info">
+          <small>WELCOME BACK</small>
+          <span id="dash-name">—</span>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">LOGOUT</button>
+    </div>
+
+    <!-- TAB 1: BOT CONSOLE -->
+    <div class="tab-content active" id="content-bot">
+      <div class="config-card">
+        <div class="card-title">
+          <span>BOT CONTROL</span>
+          <div id="bot-status-pill" class="status-pill offline"><span class="dot"></span> OFFLINE</div>
+        </div>
+        <div class="bot-controls">
+          <button class="btn-start" id="btn-start" onclick="startBot()">START</button>
+          <button class="btn-stop"  id="btn-stop"  onclick="stopBot()">STOP</button>
+        </div>
+      </div>
+
+      <div class="config-card">
+        <div class="card-title">
+          <span>LIVE LOGS</span>
+          <button class="btn-clear-log" style="margin-right: -4px;" onclick="clearLogs()">CLEAR</button>
+        </div>
+        <div class="log-console" id="log-console">
+          <div class="log-line" style="color:#5b6577">[system] Bot is currently offline.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ADD ACCOUNT -->
+    <div class="tab-content" id="content-account">
+      <div class="config-card">
+        <div class="card-title">ADD ACCOUNT DETAILS</div>
+
+        <div class="field">
+          <label>Bot User ID (UID)</label>
+          <input type="text" id="cfg-uid" placeholder="e.g. 8428894305" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Bot Password</label>
+          <input type="password" id="cfg-pass" placeholder="Account password">
+        </div>
+        <div class="field">
+          <label>Guild ID</label>
+          <input type="text" id="cfg-guild" placeholder="e.g. 3105809016" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Admin UID</label>
+          <input type="text" id="cfg-admin" placeholder="e.g. 16091833585" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label>Region</label>
+          <select class="region-select" id="cfg-region">
+            <option value="BD">🇧🇩 BD — Bangladesh</option>
+            <option value="IND">🇮🇳 IND — India</option>
+            <option value="PK">🇵🇰 PK — Pakistan</option>
+            <option value="SG">🇸🇬 SG — Singapore</option>
+            <option value="ID">🇮🇩 ID — Indonesia</option>
+            <option value="ME">🇦🇪 ME — Middle East</option>
+            <option value="VN">🇻🇳 VN — Vietnam</option>
+            <option value="TH">🇹🇭 TH — Thailand</option>
+            <option value="BR">🇧🇷 BR — Brazil</option>
+            <option value="US">🇺🇸 US — United States</option>
+            <option value="RU">🇷🇺 RU — Russia</option>
+          </select>
+        </div>
+
+        <button class="btn-submit" onclick="saveConfig()">SAVE ACCOUNT</button>
+      </div>
+    </div>
+
+    <!-- FLOATING BOTTOM NAV -->
+    <div class="bottom-nav">
+      <button class="main-tab active" id="tab-btn-bot" onclick="switchMainTab('bot')">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/></svg>
+        CONSOLE
+      </button>
+      <button class="main-tab" id="tab-btn-account" onclick="switchMainTab('account')">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        ACCOUNT
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD LOGIC
+   ═══════════════════════════════════════════════════════════ */
+let logSince = parseFloat(localStorage.getItem('yasin_log_since')) || 0;
+let logPollTimer = null;
+let toastTimeout = null;
+
+function toast(msg, type='ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => { t.className = 'toast ' + type; }, 2500);
+}
+
+function switchMainTab(tab) {
+  document.getElementById('tab-btn-bot').classList.remove('active');
+  document.getElementById('tab-btn-account').classList.remove('active');
+  document.getElementById('content-bot').classList.remove('active');
+  document.getElementById('content-account').classList.remove('active');
+
+  if (tab === 'bot') {
+    document.getElementById('tab-btn-bot').classList.add('active');
+    document.getElementById('content-bot').classList.add('active');
+  } else {
+    document.getElementById('tab-btn-account').classList.add('active');
+    document.getElementById('content-account').classList.add('active');
+  }
+}
+
+function clearLogs(showMsg = true) {
+  const con = document.getElementById('log-console');
+  con.innerHTML = '<div class="log-line" style="color:#5b6577">[system] Logs cleared.</div>';
+  logSince = Date.now() / 1000;
+  localStorage.setItem('yasin_log_since', logSince);
+  if (showMsg) {
+    toast('Logs Cleared', 'ok');
+  }
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json' },
+    ...opts
+  });
+  try { return await res.json(); } catch { return { ok: false, error: 'Network error' }; }
+}
+
+async function doLogout() {
+  localStorage.removeItem('yasin_log_since');
+  await api('/api/logout', { method: 'POST' });
+  stopLogPoll();
+  window.location.href = '/';
+}
+
+async function checkSession() {
+  const r = await api('/api/me');
+  if (r.logged_in) { 
+    await openDashboard(); 
+  } else {
+    // Prevent accidental logout on brief network blips
+    if (r.error === 'Network error') {
+      await openDashboard();
+    } else {
+      window.location.href = '/login';
+    }
+  }
+}
+
+async function openDashboard() {
+  const me = await api('/api/me');
+  const name = me.username || '—';
+  document.getElementById('dash-name').textContent = name;
+  const avatarEl = document.querySelector('.dash-avatar');
+  if (avatarEl && name !== '—') avatarEl.textContent = name.charAt(0).toUpperCase();
+  await loadConfig();
+  startLogPoll();
+}
+
+async function loadConfig() {
+  const r = await api('/api/config');
+  if (!r.ok) return;
+  const c = r.config || {};
+  document.getElementById('cfg-uid').value = c.uid || '';
+  document.getElementById('cfg-pass').value = c.password || '';
+  document.getElementById('cfg-guild').value = c.guild_id || '';
+  document.getElementById('cfg-admin').value = c.admin_uid || '';
+  document.getElementById('cfg-region').value = c.region || 'BD';
+  updateStatus(r.running);
+}
+
+function updateStatus(running) {
+  const pill = document.getElementById('bot-status-pill');
+  pill.className = 'status-pill ' + (running ? 'online' : 'offline');
+  pill.innerHTML = `<span class="dot"></span> ${running ? 'ONLINE' : 'OFFLINE'}`;
+  document.getElementById('btn-start').disabled = running;
+  document.getElementById('btn-stop').disabled = !running;
+}
+
+async function saveConfig() {
+  const payload = {
+    uid: document.getElementById('cfg-uid').value.trim(),
+    password: document.getElementById('cfg-pass').value,
+    guild_id: document.getElementById('cfg-guild').value.trim(),
+    admin_uid: document.getElementById('cfg-admin').value.trim(),
+    region: document.getElementById('cfg-region').value
+  };
+  const r = await api('/api/config', { method: 'POST', body: JSON.stringify(payload) });
+  toast(r.ok ? 'Account saved successfully' : (r.error || 'Save failed'), r.ok ? 'ok' : 'err');
+}
+
+async function startBot() {
+  toast('Bot starting', 'ok');
+  clearLogs(false);
+  const r = await api('/api/bot/start', { method: 'POST' });
+  if (r.ok) { 
+    updateStatus(true); 
+  } else {
+    toast(r.error || 'Failed to start', 'err');
+    const con = document.getElementById('log-console');
+    const div = document.createElement('div');
+    div.className = 'log-line err';
+    div.textContent = '[error] ' + (r.error || 'Failed to start bot');
+    con.appendChild(div);
+  }
+}
+
+async function stopBot() {
+  toast('Bot stopping', 'ok');
+  const r = await api('/api/bot/stop', { method: 'POST' });
+  toast(r.message || 'Bot stopped', r.ok ? 'ok' : 'err');
+  updateStatus(false);
+  const con = document.getElementById('log-console');
+  const div = document.createElement('div');
+  div.className = 'log-line';
+  div.style.color = '#7c8399';
+  div.textContent = '[system] Bot stopped.';
+  con.appendChild(div);
+}
+
+function startLogPoll() {
+  stopLogPoll();
+  logPollTimer = setInterval(pollLogs, 1200);
+  pollLogs();
+}
+function stopLogPoll() {
+  if (logPollTimer) { clearInterval(logPollTimer); logPollTimer = null; }
+}
+async function pollLogs() {
+  const r = await api('/api/bot/logs?since=' + logSince);
+  if (!r.ok || !r.logs?.length) return;
+  const con = document.getElementById('log-console');
+  for (const item of r.logs) {
+    logSince = Math.max(logSince, item.ts);
+    localStorage.setItem('yasin_log_since', logSince);
+    const div = document.createElement('div');
+    const isErr = /(error|✘|failed|exception)/i.test(item.line);
+    const isSuccess = /(success|started|online|connected)/i.test(item.line);
+    
+    div.className = 'log-line' + (isErr ? ' err' : (isSuccess ? ' success' : ''));
+    div.textContent = item.line;
+    con.appendChild(div);
+  }
+  while (con.children.length > 400) con.removeChild(con.firstChild);
+  requestAnimationFrame(() => { con.scrollTop = con.scrollHeight; });
+}
+
+/* ═══════════ BOOT ═══════════ */
+checkSession();
+</script>
+</body>
+</html>
